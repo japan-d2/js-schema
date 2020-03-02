@@ -1,0 +1,163 @@
+import { ValidationContext } from './interfaces'
+import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
+import * as JSONSchema from 'jsonschema'
+
+interface GenericOptions {
+  optional?: boolean;
+}
+
+function createContext <C> (properties: JSONSchema7['properties'] = {}, required: string[] = []): ValidationContext<C> {
+  const schema: JSONSchema7 = {
+    type: 'object',
+    properties,
+    required
+  }
+
+  function extractOptional <T extends GenericOptions> (options: T): Exclude<T, 'optional'> {
+    const opts = { ...options }
+    if ('optional' in opts) {
+      delete opts.optional
+    }
+    return opts as any
+  }
+
+  function _string (name: string, options?: GenericOptions): any {
+    return createContext({
+      ...properties,
+      [name]: {
+        type: 'string',
+        ...extractOptional(options || {})
+      }
+    }, [...required, ...(options?.optional ? [] : [name])])
+  }
+
+  function _number (name: string, options?: GenericOptions): any {
+    return createContext({
+      ...properties,
+      [name]: {
+        type: 'number',
+        ...extractOptional(options || {})
+      }
+    }, [...required, ...(options?.optional ? [] : [name])])
+  }
+
+  function _integer (name: string, options?: GenericOptions): any {
+    return createContext({
+      ...properties,
+      [name]: {
+        type: 'integer',
+        ...extractOptional(options || {})
+      }
+    }, [...required, ...(options?.optional ? [] : [name])])
+  }
+
+  function _boolean (name: string, options: GenericOptions): any {
+    return createContext({
+      ...properties,
+      [name]: {
+        type: 'boolean',
+        ...extractOptional(options || {})
+      }
+    }, [...required, ...(options?.optional ? [] : [name])])
+  }
+
+  function _null (name: string, options: GenericOptions): any {
+    return createContext({
+      ...properties,
+      [name]: {
+        type: 'null',
+        ...extractOptional(options || {})
+      }
+    }, [...required, ...(options?.optional ? [] : [name])])
+  }
+
+  function _const (name: string, value: any, options?: GenericOptions): any {
+    return createContext({
+      ...properties,
+      [name]: {
+        const: value,
+        ...extractOptional(options || {})
+      }
+    }, [...required, ...(options?.optional ? [] : [name])])
+  }
+
+  function _enum (name: string, type: string, values: any[], options: GenericOptions): any {
+    return createContext({
+      ...properties,
+      [name]: ({
+        type,
+        enum: values,
+        ...extractOptional(options || {})
+      }) as JSONSchema7Definition
+    }, [...required, ...(options?.optional ? [] : [name])])
+  }
+
+  function _array (name: string, type: string, options: any = {}, arrayOptions: GenericOptions = {}): any {
+    return createContext({
+      ...properties,
+      [name]: {
+        type: 'array',
+        items: {
+          type,
+          ...(options.toJSONSchema ? options.toJSONSchema() : options)
+        },
+        ...extractOptional(arrayOptions)
+      }
+    }, [...required, ...(arrayOptions?.optional ? [] : [name])])
+  }
+
+  function _object (name: string, options: any, objectOptions: GenericOptions): any {
+    return createContext({
+      ...properties,
+      [name]: {
+        type: 'object',
+        ...(options.toJSONSchema ? options.toJSONSchema() : options),
+        ...extractOptional(objectOptions)
+      }
+    }, [...required, ...(objectOptions?.optional ? [] : [name])])
+  }
+
+  function _omit (name: string): any {
+    const p = { ...properties }
+    delete p[name]
+    return createContext(properties)
+  }
+
+  return {
+    string: _string as any,
+    number: _number as any,
+    integer: _integer as any,
+    boolean: _boolean as any,
+    null: _null as any,
+    const: _const as any,
+    enum: _enum as any,
+    array: _array as any,
+    object: _object as any,
+    omit: _omit as any,
+    getType: undefined as any,
+    toJSONSchema (): JSONSchema7 {
+      return { ...schema }
+    }
+  }
+}
+
+export function defineSchema (): ValidationContext<{}> {
+  return createContext()
+}
+
+export type Dirty<T> = { [P in keyof T]?: unknown }
+
+export function validate <T> (input: Dirty<T>, schema: ValidationContext<T>, options?: JSONSchema.Options): input is T {
+  const result = JSONSchema.validate(input, schema.toJSONSchema(), {
+    ...options,
+    throwError: false
+  })
+  return result.valid
+}
+
+export function assertValid <T> (input: Dirty<T>, schema: ValidationContext<T>, options?: JSONSchema.Options): asserts input is T {
+  JSONSchema.validate(input, schema.toJSONSchema(), {
+    ...options,
+    throwError: true
+  })
+}
