@@ -147,6 +147,8 @@ export function defineSchema (): ValidationContext<{}> {
 
 export type DirtyProps<T> = { [P in keyof T]?: unknown }
 export type Dirty<T extends ValidationContext<any>> = DirtyProps<ReturnType<T['getType']>>
+export type Pure<T extends ValidationContext<any>> = ReturnType<T['getType']>
+
 type Flatten<T> = { [K in keyof T]: T[K] }
 
 export function validate <T> (input: DirtyProps<T>, schema: ValidationContext<T>, options?: JSONSchema.Options): input is Flatten<T> {

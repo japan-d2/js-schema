@@ -5,5 +5,9 @@ export declare type DirtyProps<T> = {
     [P in keyof T]?: unknown;
 };
 export declare type Dirty<T extends ValidationContext<any>> = DirtyProps<ReturnType<T['getType']>>;
-export declare function validate<T>(input: DirtyProps<T>, schema: ValidationContext<T>, options?: JSONSchema.Options): input is T;
-export declare function assertValid<T>(input: DirtyProps<T>, schema: ValidationContext<T>, options?: JSONSchema.Options): asserts input is T;
+declare type Flatten<T> = {
+    [K in keyof T]: T[K];
+};
+export declare function validate<T>(input: DirtyProps<T>, schema: ValidationContext<T>, options?: JSONSchema.Options): input is Flatten<T>;
+export declare function assertValid<T>(input: DirtyProps<T>, schema: ValidationContext<T>, options?: JSONSchema.Options): asserts input is Flatten<T>;
+export {};
