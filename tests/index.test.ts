@@ -257,4 +257,24 @@ describe('defineSchema', () => {
     // only type tesing
     expect(testSchema).toStrictEqual(testSchema)
   })
+
+  it('extend', () => {
+    const partSchemaA = defineSchema().string('name')
+    const partSchemaB = defineSchema().string('email', { format: 'email' })
+    const extendedSchema = partSchemaB.extend(partSchemaA)
+
+    expect(extendedSchema.toJSONSchema()).toStrictEqual({
+      type: 'object',
+      properties: {
+        email: {
+          type: 'string',
+          format: 'email'
+        },
+        name: {
+          type: 'string'
+        }
+      },
+      required: ['name', 'email']
+    })
+  })
 })

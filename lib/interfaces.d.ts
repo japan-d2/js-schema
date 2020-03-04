@@ -163,6 +163,7 @@ export interface ValidationContext<C = {}> {
         [P in K]?: ReturnType<ValidationContext<T>['getType']>;
     }>;
     omit<K extends keyof C>(name: K): ValidationContext<Omit<C, K>>;
+    extend<T extends {}>(context: ValidationContext<T>): ValidationContext<C & T>;
     getType(): {
         [K in keyof C]: C[K];
     };

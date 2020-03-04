@@ -5,6 +5,7 @@ export declare type DirtyProps<T> = {
     [P in keyof T]?: unknown;
 };
 export declare type Dirty<T extends ValidationContext<any>> = DirtyProps<ReturnType<T['getType']>>;
+export declare type Pure<T extends ValidationContext<any>> = ReturnType<T['getType']>;
 declare type Flatten<T> = {
     [K in keyof T]: T[K];
 };

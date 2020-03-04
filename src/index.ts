@@ -123,6 +123,14 @@ function createContext <C> (properties: JSONSchema7['properties'] = {}, required
     return createContext(properties)
   }
 
+  function _extend (context: ValidationContext<any>): any {
+    const schema = context.toJSONSchema()
+    return createContext({
+      ...properties,
+      ...schema.properties
+    }, [...(schema.required || []), ...required])
+  }
+
   return {
     string: _string as any,
     number: _number as any,
@@ -134,6 +142,7 @@ function createContext <C> (properties: JSONSchema7['properties'] = {}, required
     array: _array as any,
     object: _object as any,
     omit: _omit as any,
+    extend: _extend as any,
     getType: undefined as any,
     toJSONSchema (): JSONSchema7 {
       return { ...schema }
