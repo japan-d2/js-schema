@@ -82,51 +82,56 @@ export type TypeOptionsMap = {
 type Required<T> = T & { optional?: false }
 type Optional<T> = T & { optional: true }
 
-export interface ValidationContext <C = {}> {
-  string <K extends string> (name: K, options?: Required<StringType>): ValidationContext<C & { [P in K]: string }>;
-  string <K extends string> (name: K, options?: Optional<StringType>): ValidationContext<C & { [P in K]?: string }>;
+export interface SchemaDefinition <C = {}> {
+  string <K extends string> (name: K, options?: Required<StringType>): SchemaDefinition<C & { [P in K]: string }>;
+  string <K extends string> (name: K, options?: Optional<StringType>): SchemaDefinition<C & { [P in K]?: string }>;
 
-  number <K extends string> (name: K, options?: Required<NumberType>): ValidationContext<C & { [P in K]: number }>;
-  number <K extends string> (name: K, options?: Optional<NumberType>): ValidationContext<C & { [P in K]?: number }>;
+  number <K extends string> (name: K, options?: Required<NumberType>): SchemaDefinition<C & { [P in K]: number }>;
+  number <K extends string> (name: K, options?: Optional<NumberType>): SchemaDefinition<C & { [P in K]?: number }>;
 
-  integer <K extends string> (name: K, options?: Required<NumberType>): ValidationContext<C & { [P in K]: number }>;
-  integer <K extends string> (name: K, options?: Optional<NumberType>): ValidationContext<C & { [P in K]?: number }>;
+  integer <K extends string> (name: K, options?: Required<NumberType>): SchemaDefinition<C & { [P in K]: number }>;
+  integer <K extends string> (name: K, options?: Optional<NumberType>): SchemaDefinition<C & { [P in K]?: number }>;
 
-  boolean <K extends string> (name: K, options?: Required<BooleanType>): ValidationContext<C & { [P in K]: boolean }>;
-  boolean <K extends string> (name: K, options?: Optional<BooleanType>): ValidationContext<C & { [P in K]?: boolean }>;
+  boolean <K extends string> (name: K, options?: Required<BooleanType>): SchemaDefinition<C & { [P in K]: boolean }>;
+  boolean <K extends string> (name: K, options?: Optional<BooleanType>): SchemaDefinition<C & { [P in K]?: boolean }>;
 
-  null <K extends string> (name: K, options?: Required<NullType>): ValidationContext<C & { [P in K]: null }>;
-  null <K extends string> (name: K, options?: Optional<NullType>): ValidationContext<C & { [P in K]?: null }>;
+  null <K extends string> (name: K, options?: Required<NullType>): SchemaDefinition<C & { [P in K]: null }>;
+  null <K extends string> (name: K, options?: Optional<NullType>): SchemaDefinition<C & { [P in K]?: null }>;
 
-  const <K extends string, T extends string | number | boolean> (name: K, value: T, options?: Required<Metadata>): ValidationContext<C & { [P in K]: T }>;
-  const <K extends string, T extends string | number | boolean> (name: K, value: T, options?: Optional<Metadata>): ValidationContext<C & { [P in K]?: T }>;
+  const <K extends string, T extends string | number | boolean> (name: K, value: T, options?: Required<Metadata>): SchemaDefinition<C & { [P in K]: T }>;
+  const <K extends string, T extends string | number | boolean> (name: K, value: T, options?: Optional<Metadata>): SchemaDefinition<C & { [P in K]?: T }>;
 
-  enum <K extends string, T extends keyof EnumerableTypeMap, X extends Array<EnumerableTypeMap[T]>> (name: K, type: T, values: X, options?: Required<EnumType<T>>): ValidationContext<C & { [P in K]: X[0] }>;
-  enum <K extends string, T extends keyof EnumerableTypeMap, X extends Array<EnumerableTypeMap[T]>> (name: K, type: T, values: X, options?: Optional<EnumType<T>>): ValidationContext<C & { [P in K]?: X[0] }>;
+  enum <K extends string, T extends keyof EnumerableTypeMap, X extends Array<EnumerableTypeMap[T]>> (name: K, type: T, values: X, options?: Required<EnumType<T>>): SchemaDefinition<C & { [P in K]: X[0] }>;
+  enum <K extends string, T extends keyof EnumerableTypeMap, X extends Array<EnumerableTypeMap[T]>> (name: K, type: T, values: X, options?: Optional<EnumType<T>>): SchemaDefinition<C & { [P in K]?: X[0] }>;
 
-  array <K extends string> (name: K, type: 'string', options?: StringType, arrayOptions?: Required<ArrayType<string>>): ValidationContext<C & { [P in K]: string[] }>;
-  array <K extends string> (name: K, type: 'string', options?: StringType, arrayOptions?: Optional<ArrayType<string>>): ValidationContext<C & { [P in K]?: string[] }>;
+  array <K extends string> (name: K, type: 'string', options?: StringType, arrayOptions?: Required<ArrayType<string>>): SchemaDefinition<C & { [P in K]: string[] }>;
+  array <K extends string> (name: K, type: 'string', options?: StringType, arrayOptions?: Optional<ArrayType<string>>): SchemaDefinition<C & { [P in K]?: string[] }>;
 
-  array <K extends string> (name: K, type: 'number' | 'integer', options?: NumberType, arrayOptions?: Required<ArrayType<number>>): ValidationContext<C & { [P in K]: number[] }>;
-  array <K extends string> (name: K, type: 'number' | 'integer', options?: NumberType, arrayOptions?: Optional<ArrayType<number>>): ValidationContext<C & { [P in K]?: number[] }>;
+  array <K extends string> (name: K, type: 'number' | 'integer', options?: NumberType, arrayOptions?: Required<ArrayType<number>>): SchemaDefinition<C & { [P in K]: number[] }>;
+  array <K extends string> (name: K, type: 'number' | 'integer', options?: NumberType, arrayOptions?: Optional<ArrayType<number>>): SchemaDefinition<C & { [P in K]?: number[] }>;
 
-  array <K extends string> (name: K, type: 'boolean', options?: BooleanType, arrayOptions?: Required<ArrayType<boolean>>): ValidationContext<C & { [P in K]: boolean[] }>;
-  array <K extends string> (name: K, type: 'boolean', options?: BooleanType, arrayOptions?: Optional<ArrayType<boolean>>): ValidationContext<C & { [P in K]?: boolean[] }>;
+  array <K extends string> (name: K, type: 'boolean', options?: BooleanType, arrayOptions?: Required<ArrayType<boolean>>): SchemaDefinition<C & { [P in K]: boolean[] }>;
+  array <K extends string> (name: K, type: 'boolean', options?: BooleanType, arrayOptions?: Optional<ArrayType<boolean>>): SchemaDefinition<C & { [P in K]?: boolean[] }>;
 
-  array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: Required<ArrayType<null>>): ValidationContext<C & { [P in K]: null[] }>;
-  array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: Optional<ArrayType<null>>): ValidationContext<C & { [P in K]?: null[] }>;
+  array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: Required<ArrayType<null>>): SchemaDefinition<C & { [P in K]: null[] }>;
+  array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: Optional<ArrayType<null>>): SchemaDefinition<C & { [P in K]?: null[] }>;
 
-  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: ValidationContext<T>, arrayOptions?: Required<ArrayType<T>>): ValidationContext<C & { [P in K]: Array<ReturnType<ValidationContext<T>['getType']>> }>;
-  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: ValidationContext<T>, arrayOptions?: Optional<ArrayType<T>>): ValidationContext<C & { [P in K]?: Array<ReturnType<ValidationContext<T>['getType']>> }>;
+  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Required<ArrayType<T>>): SchemaDefinition<C & { [P in K]: Array<ReturnType<SchemaDefinition<T>['getType']>> }>;
+  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Optional<ArrayType<T>>): SchemaDefinition<C & { [P in K]?: Array<ReturnType<SchemaDefinition<T>['getType']>> }>;
 
-  object <K extends string, T extends {}> (name: K, options: ValidationContext<T>, objectOptions?: Required<ObjectType<T>>): ValidationContext<C & { [P in K]: ReturnType<ValidationContext<T>['getType']> }>;
-  object <K extends string, T extends {}> (name: K, options: ValidationContext<T>, objectOptions?: Optional<ObjectType<T>>): ValidationContext<C & { [P in K]?: ReturnType<ValidationContext<T>['getType']> }>;
+  object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: Required<ObjectType<T>>): SchemaDefinition<C & { [P in K]: ReturnType<SchemaDefinition<T>['getType']> }>;
+  object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: Optional<ObjectType<T>>): SchemaDefinition<C & { [P in K]?: ReturnType<SchemaDefinition<T>['getType']> }>;
 
-  omit <K extends keyof C> (name: K): ValidationContext<Omit<C, K>>;
+  omit <K extends keyof C> (name: K): SchemaDefinition<Omit<C, K>>;
 
-  extend <T extends {}> (context: ValidationContext<T>): ValidationContext<C & T>;
+  extend <T extends {}> (context: SchemaDefinition<T>): SchemaDefinition<C & T>;
 
   getType (): { [K in keyof C]: C[K] };
 
   toJSONSchema (): JSONSchema;
 }
+
+/**
+ * @deprecated use SchemaDefinition instead
+ */
+export type ValidationContext<C = {}> = SchemaDefinition<C>
