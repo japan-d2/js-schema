@@ -1,5 +1,14 @@
 import { JSONSchema7 as JSONSchema } from 'json-schema'
 
+type Format = 'date-time' | 'date' | 'time' |
+  'email' | 'idn-email' |
+  'hostname' | 'idn-hostname' |
+  'ipv4' | 'ipv6' |
+  'uri' | 'uri-reference' | 'iri' | 'iri-reference' |
+  'uri-template' |
+  'json-pointer' | 'relative-json-pointer' |
+  'regex'
+
 export type TypeMap = {
   string: string;
   number: number;
@@ -30,7 +39,7 @@ export interface StringType extends Generic<string> {
   minLength?: number;
   maxLength?: number;
   pattern?: string;
-  format?: string;
+  format?: Format;
 }
 export interface StringTypeWithBrand extends StringType, TypeBrand<'string'> {}
 
