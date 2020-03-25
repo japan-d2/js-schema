@@ -1,6 +1,7 @@
 import { SchemaDefinition } from './interfaces'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import * as JSONSchema from 'jsonschema'
+export { ValidationError } from 'jsonschema'
 
 interface GenericOptions {
   optional?: boolean;
