@@ -1,3 +1,4 @@
+import { Pure } from './index'
 import { JSONSchema7 as JSONSchema } from 'json-schema'
 
 type Format = 'date-time' | 'date' | 'time' |
@@ -125,17 +126,15 @@ export interface SchemaDefinition <C = {}> {
   array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: Required<ArrayType<null>>): SchemaDefinition<C & { [P in K]: null[] }>;
   array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: Optional<ArrayType<null>>): SchemaDefinition<C & { [P in K]?: null[] }>;
 
-  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Required<ArrayType<T>>): SchemaDefinition<C & { [P in K]: Array<ReturnType<SchemaDefinition<T>['getType']>> }>;
-  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Optional<ArrayType<T>>): SchemaDefinition<C & { [P in K]?: Array<ReturnType<SchemaDefinition<T>['getType']>> }>;
+  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Required<ArrayType<T>>): SchemaDefinition<C & { [P in K]: Array<Pure<SchemaDefinition<T>>> }>;
+  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Optional<ArrayType<T>>): SchemaDefinition<C & { [P in K]?: Array<Pure<SchemaDefinition<T>>> }>;
 
-  object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: Required<ObjectType<T>>): SchemaDefinition<C & { [P in K]: ReturnType<SchemaDefinition<T>['getType']> }>;
-  object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: Optional<ObjectType<T>>): SchemaDefinition<C & { [P in K]?: ReturnType<SchemaDefinition<T>['getType']> }>;
+  object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: Required<ObjectType<T>>): SchemaDefinition<C & { [P in K]: Pure<SchemaDefinition<T>> }>;
+  object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: Optional<ObjectType<T>>): SchemaDefinition<C & { [P in K]?: Pure<SchemaDefinition<T>> }>;
 
   omit <K extends keyof C> (name: K): SchemaDefinition<Omit<C, K>>;
 
   extend <T extends {}> (context: SchemaDefinition<T>): SchemaDefinition<C & T>;
-
-  getType (): { [K in keyof C]: C[K] };
 
   toJSONSchema (): JSONSchema;
 }

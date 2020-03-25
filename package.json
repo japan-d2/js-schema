@@ -1,6 +1,6 @@
 {
   "name": "@japan-d2/schema",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "A library designed to implement both TypeScript Interface and json-schema.",
   "main": "lib/index.js",
   "type": "lib/index.d.ts",

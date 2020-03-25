@@ -150,7 +150,6 @@ function createContext <C> (properties: JSONSchema7['properties'] = {}, required
     object: _object as any,
     omit: _omit as any,
     extend: _extend as any,
-    getType: undefined as any,
     toJSONSchema (): JSONSchema7 {
       return { ...schema }
     }

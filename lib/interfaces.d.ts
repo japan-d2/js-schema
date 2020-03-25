@@ -1,3 +1,4 @@
+import { Pure } from './index';
 import { JSONSchema7 as JSONSchema } from 'json-schema';
 declare type Format = 'date-time' | 'date' | 'time' | 'email' | 'idn-email' | 'hostname' | 'idn-hostname' | 'ipv4' | 'ipv6' | 'uri' | 'uri-reference' | 'iri' | 'iri-reference' | 'uri-template' | 'json-pointer' | 'relative-json-pointer' | 'regex';
 export declare type TypeMap = {
@@ -152,22 +153,19 @@ export interface SchemaDefinition<C = {}> {
         [P in K]?: null[];
     }>;
     array<K extends string, T extends {}>(name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Required<ArrayType<T>>): SchemaDefinition<C & {
-        [P in K]: Array<ReturnType<SchemaDefinition<T>['getType']>>;
+        [P in K]: Array<Pure<SchemaDefinition<T>>>;
     }>;
     array<K extends string, T extends {}>(name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Optional<ArrayType<T>>): SchemaDefinition<C & {
-        [P in K]?: Array<ReturnType<SchemaDefinition<T>['getType']>>;
+        [P in K]?: Array<Pure<SchemaDefinition<T>>>;
     }>;
     object<K extends string, T extends {}>(name: K, options: SchemaDefinition<T>, objectOptions?: Required<ObjectType<T>>): SchemaDefinition<C & {
-        [P in K]: ReturnType<SchemaDefinition<T>['getType']>;
+        [P in K]: Pure<SchemaDefinition<T>>;
     }>;
     object<K extends string, T extends {}>(name: K, options: SchemaDefinition<T>, objectOptions?: Optional<ObjectType<T>>): SchemaDefinition<C & {
-        [P in K]?: ReturnType<SchemaDefinition<T>['getType']>;
+        [P in K]?: Pure<SchemaDefinition<T>>;
     }>;
     omit<K extends keyof C>(name: K): SchemaDefinition<Omit<C, K>>;
     extend<T extends {}>(context: SchemaDefinition<T>): SchemaDefinition<C & T>;
-    getType(): {
-        [K in keyof C]: C[K];
-    };
     toJSONSchema(): JSONSchema;
 }
 /**
