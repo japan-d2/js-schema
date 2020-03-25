@@ -1,4 +1,4 @@
-import { validate, assertValid, defineSchema } from '../src/index'
+import { validate, assertValid, defineSchema, Pure } from '../src/index'
 
 it('validate', () => {
   const schema = defineSchema().string('name')
@@ -235,7 +235,7 @@ describe('defineSchema', () => {
       ]
     })
 
-    type SchemaType = ReturnType<typeof schema.getType>
+    type SchemaType = Pure<typeof schema>
     const testSchema: SchemaType = {
       stringRequired: 'a',
       numberRequired: 1,
