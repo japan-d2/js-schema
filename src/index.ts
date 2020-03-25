@@ -8,8 +8,8 @@ interface GenericOptions {
 }
 
 export type DirtyProps<T> = { [P in keyof T]?: unknown }
-export type Dirty<T extends SchemaDefinition<any>> = DirtyProps<ReturnType<T['getType']>>
-export type Pure<T extends SchemaDefinition<any>> = ReturnType<T['getType']>
+export type Pure<T> = T extends SchemaDefinition<infer T> ? T : never
+export type Dirty<T extends SchemaDefinition<any>> = DirtyProps<Pure<T>>
 
 type Flatten<T> = { [K in keyof T]: T[K] }
 
