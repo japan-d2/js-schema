@@ -258,23 +258,21 @@ describe('defineSchema', () => {
     expect(testSchema).toStrictEqual(testSchema)
   })
 
-  it('extend', () => {
-    const partSchemaA = defineSchema().string('name')
-    const partSchemaB = defineSchema().string('email', { format: 'email' })
-    const extendedSchema = partSchemaB.extend(partSchemaA)
+  it('omit', () => {
+    const schema = defineSchema()
+      .string('name')
+      .string('phoneNumber')
 
-    expect(extendedSchema.toJSONSchema()).toStrictEqual({
+    const omittedSchema = schema.omit('phoneNumber')
+
+    expect(omittedSchema.toJSONSchema()).toStrictEqual({
       type: 'object',
       properties: {
-        email: {
-          type: 'string',
-          format: 'email'
-        },
         name: {
           type: 'string'
         }
       },
-      required: ['name', 'email']
+      required: ['name']
     })
   })
 })

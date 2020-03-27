@@ -127,7 +127,7 @@ function createContext <C> (properties: JSONSchema7['properties'] = {}, required
   function _omit (name: string): any {
     const p = { ...properties }
     delete p[name]
-    return createContext(properties)
+    return createContext(p, required.filter((r) => r !== name))
   }
 
   function _extend (context: SchemaDefinition<any>): any {
