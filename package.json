@@ -6,6 +6,7 @@
   "type": "lib/index.d.ts",
   "scripts": {
     "test": "jest",
+    "lint": "eslint . --ext .ts",
     "build": "tsc -p tsconfig.build.json"
   },
   "files": [
