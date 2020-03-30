@@ -1,4 +1,4 @@
-import { validate, assertValid, defineSchema, Pure } from '../src/index'
+import { validate, assertValid, defineSchema, Pure, ValidationError } from '../src/index'
 
 it('validate', () => {
   const schema = defineSchema().string('name')
@@ -12,6 +12,7 @@ it('assertValid', () => {
 
   expect(() => assertValid({ name: 'test' }, schema)).not.toThrow()
   expect(() => assertValid({ name: 1 }, schema)).toThrow(/string/)
+  expect(() => assertValid({ name: 1 }, schema)).toThrow(ValidationError)
 })
 
 describe('defineSchema', () => {
