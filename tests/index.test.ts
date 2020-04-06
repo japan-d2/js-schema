@@ -1,25 +1,5 @@
 import { validate, assertValid, defineSchema, Pure, ValidationError } from '../src/index'
 
-const user = defineSchema()
-  .string('name', {
-    maxLength: 32,
-    minLength: 1
-  })
-  .integer('age', {
-    minimum: 0
-  })
-
-console.log(user.toJSONSchema())
-
-const dirtyUser = {
-  name: 'roa',
-  age: Math.random() < 0.5 ? 24 : '24'
-}
-
-if (validate(dirtyUser, user)) {
-  console.log(dirtyUser)
-}
-
 it('validate', () => {
   const schema = defineSchema().string('name')
 
