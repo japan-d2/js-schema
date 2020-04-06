@@ -46,6 +46,31 @@ const exampleUserSchema = defineSchema()
   })
 ```
 
+## extend other schema
+
+`schema.extend (otherSchema) -> schema`
+
+```typescript
+import { defineSchema } from '@japan-d2/schema'
+
+const withAdmin = defineSchema()
+  .const('admin', true)
+
+const exampleUserSchemaWithAdmin = exampleUserSchema
+  .extend(withAdmin)
+```
+
+## omit specific key
+
+`schema.omit (key) -> schema`
+
+```typescript
+import { defineSchema } from '@japan-d2/schema'
+
+const exampleUserSchemaWithoutAge = exampleUserSchema
+  .omit('age')
+```
+
 ## runtime conversion to JSON Schema
 
 call instance method `toJSONSchema()` of schema.
@@ -82,6 +107,8 @@ dirtyUser.age // number | string
 
 ### validation with [User-Defined Type Guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards)
 
+`validate (instance, schema) -> boolean`
+
 Returns `true` or `false` using `validate` function in [jsonschema](https://www.npmjs.com/package/jsonschema) package with options `{ throwError: false }`.
 When used inside an if conditional expression, type guard is enabled.
 
@@ -96,9 +123,10 @@ dirtyUser.age // number | string
 
 ### validation with [Assertion Function](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions)
 
-throws `ValidationError` or not using `validate` function in [jsonschema](https://www.npmjs.com/package/jsonschema) package with options `{ throwError: true }`.
-this function is a Assertion Function, new feature of TS 3.7.
-This fixes the type in a scope where no error occurred.
+`assertValid (instance, schema) -> void`
+
+Throws `ValidationError` if instance are invalid, and does nothing if valid. Internally it uses `validate` function in [jsonschema](https://www.npmjs.com/package/jsonschema) package with options `{ throwError: true }`.
+This function is an Assertion Function that uses the new features of TS3.7 and this fixes the type in a scope where no error occurred.
 
 ```typescript
 import { validate } from '@japan-d2/schema'
