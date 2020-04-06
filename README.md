@@ -99,7 +99,7 @@ Assume the following "dirty" data for validation.
 ```typescript
 const dirtyUser = {
   name: 'roa',
-  age: Math.random() < 0.5 ? 24 : '24'
+  age: Math.random() < 0.5 ? 13 : '13'
 }
 
 dirtyUser.age // number | string
