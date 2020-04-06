@@ -137,6 +137,36 @@ assertValid(dirtyUser, exampleUserSchema)
 dirtyUser.age // number
 ```
 
+## Type utilities
+
+### Pure
+
+Provides a purified schema type. Same as guarded by `validate` or` assertValid`.
+
+```
+import { Pure } from '@japan-d2/schema'
+type UserType = Pure<typeof exampleUserSchema>
+
+const user: UserType = {
+  name: 'roa',
+  age: 13,
+}
+```
+
+### Dirty
+
+Provides an explicitly tainted schema type. It can be used to indicate an external value as input value for `validate` or` assertValid`.
+
+```
+import { Dirty } from '@japan-d2/schema'
+type DirtyUserType = Dirty<typeof exampleUserSchema>
+
+const user: DirtyUserType = {}
+
+user.name // unknown
+user.age // unknown
+```
+
 # License
 
 MIT
