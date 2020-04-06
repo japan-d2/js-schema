@@ -18,6 +18,21 @@ yarn add @japan-d2/schema
 
 ## schema definition
 
+Construct JSON Schema and TypeScript types simultaneously in the method chain for `defineSchema()`.
+The following methods are provided for schema definition:
+
+- `string (name, options?)`
+- `number (name, options?)`
+- `integer (name, options?)`
+- `boolean (name, options?)`
+- `null (name, options?):`
+- `const (name, value, options?)`
+- `enum (name, type, values, options?)`
+- `array (name, type, itemOptions?, arrayOptions?)`
+- `object (name, options, objectOptions?)`
+
+for example:
+
 ```typescript
 import { defineSchema } from '@japan-d2/schema'
 
@@ -67,7 +82,7 @@ dirtyUser.age // number | string
 
 ### validation with [User-Defined Type Guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards)
 
-Returns true / false using [jsonschema](https://www.npmjs.com/package/jsonschema)'s `validate` function with `{ throwError: false }`.
+Returns true / false using `validate` function in [jsonschema](https://www.npmjs.com/package/jsonschema) package with options `{ throwError: false }`.
 When used inside an if conditional expression, type guard is enabled.
 
 ```typescript
