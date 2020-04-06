@@ -82,7 +82,7 @@ dirtyUser.age // number | string
 
 ### validation with [User-Defined Type Guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards)
 
-Returns true / false using `validate` function in [jsonschema](https://www.npmjs.com/package/jsonschema) package with options `{ throwError: false }`.
+Returns `true` or `false` using `validate` function in [jsonschema](https://www.npmjs.com/package/jsonschema) package with options `{ throwError: false }`.
 When used inside an if conditional expression, type guard is enabled.
 
 ```typescript
@@ -96,6 +96,10 @@ dirtyUser.age // number | string
 
 ### validation with [Assertion Function](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions)
 
+throws `ValidationError` or not using `validate` function in [jsonschema](https://www.npmjs.com/package/jsonschema) package with options `{ throwError: true }`.
+this function is a Assertion Function, new feature of TS 3.7.
+This fixes the type in a scope where no error occurred.
+
 ```typescript
 import { validate } from '@japan-d2/schema'
 
@@ -104,10 +108,6 @@ assertValid(dirtyUser, exampleUserSchema)
 
 dirtyUser.age // number
 ```
-
-# example
-
-TODO
 
 # license
 
