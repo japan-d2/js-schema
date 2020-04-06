@@ -143,7 +143,7 @@ dirtyUser.age // number
 
 Provides a purified schema type. Same as guarded by `validate` or` assertValid`.
 
-```
+```typescript
 import { Pure } from '@japan-d2/schema'
 type UserType = Pure<typeof exampleUserSchema>
 
@@ -157,7 +157,7 @@ const user: UserType = {
 
 Provides an explicitly tainted schema type. It can be used to indicate an external value as input value for `validate` or` assertValid`.
 
-```
+```typescript
 import { Dirty } from '@japan-d2/schema'
 type DirtyUserType = Dirty<typeof exampleUserSchema>
 
