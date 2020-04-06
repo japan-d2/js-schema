@@ -14,9 +14,9 @@ or
 yarn add @japan-d2/schema
 ```
 
-# usage
+# Usage
 
-## schema definition
+## Schema definition
 
 Construct JSON Schema and TypeScript types simultaneously in the method chain for `defineSchema()`.
 The following methods are provided for schema definition:
@@ -31,7 +31,7 @@ The following methods are provided for schema definition:
 - `array (name, type, itemOptions?, arrayOptions?)`
 - `object (name, options, objectOptions?)`
 
-for example:
+For example:
 
 ```typescript
 import { defineSchema } from '@japan-d2/schema'
@@ -46,7 +46,7 @@ const exampleUserSchema = defineSchema()
   })
 ```
 
-## extend other schema
+## Extend other schema
 
 `schema.extend (otherSchema) -> schema`
 
@@ -60,7 +60,7 @@ const exampleUserSchemaWithAdmin = exampleUserSchema
   .extend(withAdmin)
 ```
 
-## omit specific key
+## Omit specific key
 
 `schema.omit (key) -> schema`
 
@@ -71,7 +71,7 @@ const exampleUserSchemaWithoutAge = exampleUserSchema
   .omit('age')
 ```
 
-## runtime conversion to JSON Schema
+## Runtime conversion to JSON Schema
 
 call instance method `toJSONSchema()` of schema.
 
@@ -92,7 +92,7 @@ The return value is a standard JSON Schema object (supports Draft 7).
 }
 ```
 
-## validation
+## Validation
 
 Assume the following "dirty" data for validation.
 
@@ -105,7 +105,7 @@ const dirtyUser = {
 dirtyUser.age // number | string
 ```
 
-### validation with [User-Defined Type Guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards)
+### Validation with [User-Defined Type Guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards)
 
 `validate (instance, schema) -> boolean`
 
@@ -121,7 +121,7 @@ if (validate(dirtyUser, exampleUserSchema)) {
 dirtyUser.age // number | string
 ```
 
-### validation with [Assertion Function](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions)
+### Validation with [Assertion Function](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions)
 
 `assertValid (instance, schema) -> void`
 
@@ -137,6 +137,6 @@ assertValid(dirtyUser, exampleUserSchema)
 dirtyUser.age // number
 ```
 
-# license
+# License
 
 MIT
