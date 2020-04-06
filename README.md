@@ -158,13 +158,20 @@ const user: UserType = {
 Provides an explicitly tainted schema type. It can be used to indicate an external value as input value for `validate` or` assertValid`.
 
 ```typescript
-import { Dirty } from '@japan-d2/schema'
+import { Dirty, assertValid } from '@japan-d2/schema'
 type DirtyUserType = Dirty<typeof exampleUserSchema>
 
-const user: DirtyUserType = {}
+app.post('/users', (req) => {
+  const user: DirtyUserType = req.body
 
-user.name // unknown
-user.age // unknown
+  user.name // unknown
+  user.age // unknown
+
+  assertValid(user)
+
+  user.name // string
+  user.age // number
+})
 ```
 
 # License
