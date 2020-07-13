@@ -139,14 +139,19 @@ function createContext <C> (properties: JSONSchema7['properties'] = {}, required
     }, [...required, ...(objectOptions?.optional ? [] : [name])])
   }
 
-  function _omit (name: string): any {
+  function _omit (...names: string[]): any {
     const p = { ...properties }
-    delete p[name]
-    return createContext(p, required.filter((r) => r !== name))
+    for (const name of names) {
+      delete p[name]
+    }
+    return createContext(p, required.filter((r) => !names.includes(r)))
   }
 
-  function _pick (name: string): any {
-    return createContext({ [name]: properties[name] }, required.filter((r) => r === name))
+  function _pick (...names: string[]): any {
+    return createContext(names.reduce((current, n) => ({
+      ...current,
+      [n]: properties[n]
+    }), {}), required.filter((r) => names.includes(r)))
   }
 
   function _extend (context: SchemaDefinition<any>): any {

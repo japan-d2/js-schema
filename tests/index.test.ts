@@ -638,6 +638,25 @@ describe('defineSchema', () => {
     })
   })
 
+  it('omit multiple', () => {
+    const schema = defineSchema()
+      .string('name')
+      .string('phoneNumber')
+      .string('age')
+
+    const omittedSchema = schema.omit('phoneNumber', 'age')
+
+    expect(omittedSchema.toJSONSchema()).toStrictEqual({
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string'
+        }
+      },
+      required: ['name']
+    })
+  })
+
   it('pick', () => {
     const schema = defineSchema()
       .string('name')
@@ -653,6 +672,28 @@ describe('defineSchema', () => {
         }
       },
       required: ['phoneNumber']
+    })
+  })
+
+  it('pick multiple', () => {
+    const schema = defineSchema()
+      .string('name')
+      .string('phoneNumber')
+      .number('age')
+
+    const pickedSchema = schema.pick('name', 'phoneNumber')
+
+    expect(pickedSchema.toJSONSchema()).toStrictEqual({
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string'
+        },
+        phoneNumber: {
+          type: 'string'
+        }
+      },
+      required: ['name', 'phoneNumber']
     })
   })
 })

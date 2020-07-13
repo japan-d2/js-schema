@@ -158,8 +158,8 @@ export interface SchemaDefinition <C = {}> {
   object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: Nullable<Required<ObjectType<T>>>): SchemaDefinition<C & { [P in K]: Pure<SchemaDefinition<T>> | null }>;
   object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: Nullable<Optional<ObjectType<T>>>): SchemaDefinition<C & { [P in K]?: Pure<SchemaDefinition<T>> | null }>;
 
-  omit <K extends keyof C> (name: K): SchemaDefinition<Omit<C, K>>;
-  pick <K extends keyof C> (name: K): SchemaDefinition<Pick<C, K>>;
+  omit <K extends keyof C> (...names: K[]): SchemaDefinition<Omit<C, K>>;
+  pick <K extends keyof C> (...names: K[]): SchemaDefinition<Pick<C, K>>;
 
   extend <T extends {}> (context: SchemaDefinition<T>): SchemaDefinition<C & T>;
 
