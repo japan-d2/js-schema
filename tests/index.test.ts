@@ -276,4 +276,22 @@ describe('defineSchema', () => {
       required: ['name']
     })
   })
+
+  it('pick', () => {
+    const schema = defineSchema()
+      .string('name')
+      .string('phoneNumber')
+
+    const pickedSchema = schema.pick('phoneNumber')
+
+    expect(pickedSchema.toJSONSchema()).toStrictEqual({
+      type: 'object',
+      properties: {
+        phoneNumber: {
+          type: 'string'
+        }
+      },
+      required: ['phoneNumber']
+    })
+  })
 })

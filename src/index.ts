@@ -130,6 +130,10 @@ function createContext <C> (properties: JSONSchema7['properties'] = {}, required
     return createContext(p, required.filter((r) => r !== name))
   }
 
+  function _pick (name: string): any {
+    return createContext({ [name]: properties[name] }, required.filter((r) => r === name))
+  }
+
   function _extend (context: SchemaDefinition<any>): any {
     const schema = context.toJSONSchema()
     return createContext({
@@ -149,6 +153,7 @@ function createContext <C> (properties: JSONSchema7['properties'] = {}, required
     array: _array as any,
     object: _object as any,
     omit: _omit as any,
+    pick: _pick as any,
     extend: _extend as any,
     toJSONSchema (): JSONSchema7 {
       return { ...schema }

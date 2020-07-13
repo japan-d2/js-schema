@@ -71,6 +71,18 @@ const exampleUserSchemaWithoutAge = exampleUserSchema
   .omit('age')
 ```
 
+## Pick specific key
+
+`schema.pick (key) -> schema`
+
+```typescript
+import { defineSchema } from '@japan-d2/schema'
+
+const exampleUserSchemaWithoutAge = defineSchema()
+  .extend(exampleUserSchema.pick('name'))
+  .extend(exampleUserSchema.pick('role'))
+```
+
 ## Runtime conversion to JSON Schema
 
 call instance method `toJSONSchema()` of schema.
