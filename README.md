@@ -62,25 +62,32 @@ const exampleUserSchemaWithAdmin = exampleUserSchema
 
 ## Omit specific key
 
-`schema.omit (key) -> schema`
+`schema.omit (...keys) -> schema`
 
 ```typescript
 import { defineSchema } from '@japan-d2/schema'
 
-const exampleUserSchemaWithoutAge = exampleUserSchema
-  .omit('age')
+const exampleUserSchemaWithoutPrivateInfo = exampleUserSchema
+  .omit(
+    'age',
+    'name',
+    'phoneNumber'
+  )
 ```
 
 ## Pick specific key
 
-`schema.pick (key) -> schema`
+`schema.pick (...keys) -> schema`
 
 ```typescript
 import { defineSchema } from '@japan-d2/schema'
 
-const exampleUserSchemaWithoutAge = defineSchema()
-  .extend(exampleUserSchema.pick('name'))
-  .extend(exampleUserSchema.pick('role'))
+const exampleUserSchemaOnlyPublicInfo = exampleUserSchema
+  .pick(
+    'id',
+    'email',
+    'nickName'
+  )
 ```
 
 ## Runtime conversion to JSON Schema
