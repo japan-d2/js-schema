@@ -5,6 +5,7 @@ export { ValidationError } from 'jsonschema'
 
 interface GenericOptions {
   optional?: boolean;
+  nullable?: boolean;
 }
 
 export type DirtyProps<T> = { [P in keyof T]?: unknown }
@@ -20,10 +21,24 @@ function createContext <C> (properties: JSONSchema7['properties'] = {}, required
     required
   }
 
-  function extractOptional <T extends GenericOptions> (options: T): Exclude<T, 'optional'> {
+  function orNull (schema: JSONSchema7Definition, nullable: boolean): JSONSchema7Definition {
+    if (!nullable) {
+      return schema
+    }
+    return {
+      oneOf: [schema, {
+        type: 'null'
+      }]
+    }
+  }
+
+  function extractOptional <T extends GenericOptions> (options: T): Exclude<T, 'optional' | 'nullable'> {
     const opts = { ...options }
     if ('optional' in opts) {
       delete opts.optional
+    }
+    if ('nullable' in opts) {
+      delete opts.nullable
     }
     return opts as any
   }
@@ -31,40 +46,40 @@ function createContext <C> (properties: JSONSchema7['properties'] = {}, required
   function _string (name: string, options?: GenericOptions): any {
     return createContext({
       ...properties,
-      [name]: {
+      [name]: orNull({
         type: 'string',
         ...extractOptional(options || {})
-      }
+      }, options?.nullable ?? false)
     }, [...required, ...(options?.optional ? [] : [name])])
   }
 
   function _number (name: string, options?: GenericOptions): any {
     return createContext({
       ...properties,
-      [name]: {
+      [name]: orNull({
         type: 'number',
         ...extractOptional(options || {})
-      }
+      }, options?.nullable ?? false)
     }, [...required, ...(options?.optional ? [] : [name])])
   }
 
   function _integer (name: string, options?: GenericOptions): any {
     return createContext({
       ...properties,
-      [name]: {
+      [name]: orNull({
         type: 'integer',
         ...extractOptional(options || {})
-      }
+      }, options?.nullable ?? false)
     }, [...required, ...(options?.optional ? [] : [name])])
   }
 
   function _boolean (name: string, options: GenericOptions): any {
     return createContext({
       ...properties,
-      [name]: {
+      [name]: orNull({
         type: 'boolean',
         ...extractOptional(options || {})
-      }
+      }, options?.nullable ?? false)
     }, [...required, ...(options?.optional ? [] : [name])])
   }
 
@@ -81,46 +96,46 @@ function createContext <C> (properties: JSONSchema7['properties'] = {}, required
   function _const (name: string, value: any, options?: GenericOptions): any {
     return createContext({
       ...properties,
-      [name]: {
+      [name]: orNull({
         const: value,
         ...extractOptional(options || {})
-      }
+      }, options?.nullable ?? false)
     }, [...required, ...(options?.optional ? [] : [name])])
   }
 
   function _enum (name: string, type: string, values: any[], options: GenericOptions): any {
     return createContext({
       ...properties,
-      [name]: ({
+      [name]: orNull({
         type,
         enum: values,
         ...extractOptional(options || {})
-      }) as JSONSchema7Definition
+      } as JSONSchema7Definition, options?.nullable ?? false)
     }, [...required, ...(options?.optional ? [] : [name])])
   }
 
   function _array (name: string, type: string, options: any = {}, arrayOptions: GenericOptions = {}): any {
     return createContext({
       ...properties,
-      [name]: {
+      [name]: orNull({
         type: 'array',
         items: {
           type,
           ...(options.toJSONSchema ? options.toJSONSchema() : options)
         },
         ...extractOptional(arrayOptions)
-      }
+      }, arrayOptions?.nullable ?? false)
     }, [...required, ...(arrayOptions?.optional ? [] : [name])])
   }
 
   function _object (name: string, options: any, objectOptions: GenericOptions): any {
     return createContext({
       ...properties,
-      [name]: {
+      [name]: orNull({
         type: 'object',
         ...(options.toJSONSchema ? options.toJSONSchema() : options),
         ...extractOptional(objectOptions)
-      }
+      }, options?.nullable ?? false)
     }, [...required, ...(objectOptions?.optional ? [] : [name])])
   }
 

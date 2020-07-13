@@ -91,46 +91,72 @@ export type TypeOptionsMap = {
 
 type Required<T> = T & { optional?: false }
 type Optional<T> = T & { optional: true }
+type NonNullable<T> = T & { nullable?: false }
+type Nullable<T> = T & { nullable: true }
 
 export interface SchemaDefinition <C = {}> {
-  string <K extends string> (name: K, options?: Required<StringType>): SchemaDefinition<C & { [P in K]: string }>;
-  string <K extends string> (name: K, options?: Optional<StringType>): SchemaDefinition<C & { [P in K]?: string }>;
+  string <K extends string> (name: K, options?: NonNullable<Required<StringType>>): SchemaDefinition<C & { [P in K]: string }>;
+  string <K extends string> (name: K, options?: NonNullable<Optional<StringType>>): SchemaDefinition<C & { [P in K]?: string }>;
+  string <K extends string> (name: K, options?: Nullable<Required<StringType>>): SchemaDefinition<C & { [P in K]: string | null }>;
+  string <K extends string> (name: K, options?: Nullable<Optional<StringType>>): SchemaDefinition<C & { [P in K]?: string | null }>;
 
-  number <K extends string> (name: K, options?: Required<NumberType>): SchemaDefinition<C & { [P in K]: number }>;
-  number <K extends string> (name: K, options?: Optional<NumberType>): SchemaDefinition<C & { [P in K]?: number }>;
+  number <K extends string> (name: K, options?: NonNullable<Required<NumberType>>): SchemaDefinition<C & { [P in K]: number }>;
+  number <K extends string> (name: K, options?: NonNullable<Optional<NumberType>>): SchemaDefinition<C & { [P in K]?: number }>;
+  number <K extends string> (name: K, options?: Nullable<Required<NumberType>>): SchemaDefinition<C & { [P in K]: number | null }>;
+  number <K extends string> (name: K, options?: Nullable<Optional<NumberType>>): SchemaDefinition<C & { [P in K]?: number | null }>;
 
-  integer <K extends string> (name: K, options?: Required<NumberType>): SchemaDefinition<C & { [P in K]: number }>;
-  integer <K extends string> (name: K, options?: Optional<NumberType>): SchemaDefinition<C & { [P in K]?: number }>;
+  integer <K extends string> (name: K, options?: NonNullable<Required<NumberType>>): SchemaDefinition<C & { [P in K]: number }>;
+  integer <K extends string> (name: K, options?: NonNullable<Optional<NumberType>>): SchemaDefinition<C & { [P in K]?: number }>;
+  integer <K extends string> (name: K, options?: Nullable<Required<NumberType>>): SchemaDefinition<C & { [P in K]: number | null }>;
+  integer <K extends string> (name: K, options?: Nullable<Optional<NumberType>>): SchemaDefinition<C & { [P in K]?: number | null }>;
 
-  boolean <K extends string> (name: K, options?: Required<BooleanType>): SchemaDefinition<C & { [P in K]: boolean }>;
-  boolean <K extends string> (name: K, options?: Optional<BooleanType>): SchemaDefinition<C & { [P in K]?: boolean }>;
+  boolean <K extends string> (name: K, options?: NonNullable<Required<BooleanType>>): SchemaDefinition<C & { [P in K]: boolean }>;
+  boolean <K extends string> (name: K, options?: NonNullable<Optional<BooleanType>>): SchemaDefinition<C & { [P in K]?: boolean }>;
+  boolean <K extends string> (name: K, options?: Nullable<Required<BooleanType>>): SchemaDefinition<C & { [P in K]: boolean | null }>;
+  boolean <K extends string> (name: K, options?: Nullable<Optional<BooleanType>>): SchemaDefinition<C & { [P in K]?: boolean | null }>;
 
-  null <K extends string> (name: K, options?: Required<NullType>): SchemaDefinition<C & { [P in K]: null }>;
-  null <K extends string> (name: K, options?: Optional<NullType>): SchemaDefinition<C & { [P in K]?: null }>;
+  null <K extends string> (name: K, options?: NonNullable<Required<NullType>>): SchemaDefinition<C & { [P in K]: null }>;
+  null <K extends string> (name: K, options?: NonNullable<Optional<NullType>>): SchemaDefinition<C & { [P in K]?: null }>;
 
-  const <K extends string, T extends string | number | boolean> (name: K, value: T, options?: Required<Metadata>): SchemaDefinition<C & { [P in K]: T }>;
-  const <K extends string, T extends string | number | boolean> (name: K, value: T, options?: Optional<Metadata>): SchemaDefinition<C & { [P in K]?: T }>;
+  const <K extends string, T extends string | number | boolean> (name: K, value: T, options?: NonNullable<Required<Metadata>>): SchemaDefinition<C & { [P in K]: T }>;
+  const <K extends string, T extends string | number | boolean> (name: K, value: T, options?: NonNullable<Optional<Metadata>>): SchemaDefinition<C & { [P in K]?: T }>;
+  const <K extends string, T extends string | number | boolean> (name: K, value: T, options?: Nullable<Required<Metadata>>): SchemaDefinition<C & { [P in K]: T | null }>;
+  const <K extends string, T extends string | number | boolean> (name: K, value: T, options?: Nullable<Optional<Metadata>>): SchemaDefinition<C & { [P in K]?: T | null }>;
 
-  enum <K extends string, T extends keyof EnumerableTypeMap, X extends Array<EnumerableTypeMap[T]>> (name: K, type: T, values: X, options?: Required<EnumType<T>>): SchemaDefinition<C & { [P in K]: X[0] }>;
-  enum <K extends string, T extends keyof EnumerableTypeMap, X extends Array<EnumerableTypeMap[T]>> (name: K, type: T, values: X, options?: Optional<EnumType<T>>): SchemaDefinition<C & { [P in K]?: X[0] }>;
+  enum <K extends string, T extends keyof EnumerableTypeMap, X extends Array<EnumerableTypeMap[T]>> (name: K, type: T, values: X, options?: NonNullable<Required<EnumType<T>>>): SchemaDefinition<C & { [P in K]: X[0] }>;
+  enum <K extends string, T extends keyof EnumerableTypeMap, X extends Array<EnumerableTypeMap[T]>> (name: K, type: T, values: X, options?: NonNullable<Optional<EnumType<T>>>): SchemaDefinition<C & { [P in K]?: X[0] }>;
+  enum <K extends string, T extends keyof EnumerableTypeMap, X extends Array<EnumerableTypeMap[T]>> (name: K, type: T, values: X, options?: Nullable<Required<EnumType<T>>>): SchemaDefinition<C & { [P in K]: X[0] | null }>;
+  enum <K extends string, T extends keyof EnumerableTypeMap, X extends Array<EnumerableTypeMap[T]>> (name: K, type: T, values: X, options?: Nullable<Optional<EnumType<T>>>): SchemaDefinition<C & { [P in K]?: X[0] | null }>;
 
-  array <K extends string> (name: K, type: 'string', options?: StringType, arrayOptions?: Required<ArrayType<string>>): SchemaDefinition<C & { [P in K]: string[] }>;
-  array <K extends string> (name: K, type: 'string', options?: StringType, arrayOptions?: Optional<ArrayType<string>>): SchemaDefinition<C & { [P in K]?: string[] }>;
+  array <K extends string> (name: K, type: 'string', options?: StringType, arrayOptions?: NonNullable<Required<ArrayType<string>>>): SchemaDefinition<C & { [P in K]: string[] }>;
+  array <K extends string> (name: K, type: 'string', options?: StringType, arrayOptions?: NonNullable<Optional<ArrayType<string>>>): SchemaDefinition<C & { [P in K]?: string[] }>;
+  array <K extends string> (name: K, type: 'string', options?: StringType, arrayOptions?: Nullable<Required<ArrayType<string>>>): SchemaDefinition<C & { [P in K]: string[] | null }>;
+  array <K extends string> (name: K, type: 'string', options?: StringType, arrayOptions?: Nullable<Optional<ArrayType<string>>>): SchemaDefinition<C & { [P in K]?: string[] | null }>;
 
-  array <K extends string> (name: K, type: 'number' | 'integer', options?: NumberType, arrayOptions?: Required<ArrayType<number>>): SchemaDefinition<C & { [P in K]: number[] }>;
-  array <K extends string> (name: K, type: 'number' | 'integer', options?: NumberType, arrayOptions?: Optional<ArrayType<number>>): SchemaDefinition<C & { [P in K]?: number[] }>;
+  array <K extends string> (name: K, type: 'number' | 'integer', options?: NumberType, arrayOptions?: NonNullable<Required<ArrayType<number>>>): SchemaDefinition<C & { [P in K]: number[] }>;
+  array <K extends string> (name: K, type: 'number' | 'integer', options?: NumberType, arrayOptions?: NonNullable<Optional<ArrayType<number>>>): SchemaDefinition<C & { [P in K]?: number[] }>;
+  array <K extends string> (name: K, type: 'number' | 'integer', options?: NumberType, arrayOptions?: Nullable<Required<ArrayType<number>>>): SchemaDefinition<C & { [P in K]: number[] | null }>;
+  array <K extends string> (name: K, type: 'number' | 'integer', options?: NumberType, arrayOptions?: Nullable<Optional<ArrayType<number>>>): SchemaDefinition<C & { [P in K]?: number[] | null }>;
 
-  array <K extends string> (name: K, type: 'boolean', options?: BooleanType, arrayOptions?: Required<ArrayType<boolean>>): SchemaDefinition<C & { [P in K]: boolean[] }>;
-  array <K extends string> (name: K, type: 'boolean', options?: BooleanType, arrayOptions?: Optional<ArrayType<boolean>>): SchemaDefinition<C & { [P in K]?: boolean[] }>;
+  array <K extends string> (name: K, type: 'boolean', options?: BooleanType, arrayOptions?: NonNullable<Required<ArrayType<boolean>>>): SchemaDefinition<C & { [P in K]: boolean[] }>;
+  array <K extends string> (name: K, type: 'boolean', options?: BooleanType, arrayOptions?: NonNullable<Optional<ArrayType<boolean>>>): SchemaDefinition<C & { [P in K]?: boolean[] }>;
+  array <K extends string> (name: K, type: 'boolean', options?: BooleanType, arrayOptions?: Nullable<Required<ArrayType<boolean>>>): SchemaDefinition<C & { [P in K]: boolean[] | null }>;
+  array <K extends string> (name: K, type: 'boolean', options?: BooleanType, arrayOptions?: Nullable<Optional<ArrayType<boolean>>>): SchemaDefinition<C & { [P in K]?: boolean[] | null }>;
 
-  array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: Required<ArrayType<null>>): SchemaDefinition<C & { [P in K]: null[] }>;
-  array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: Optional<ArrayType<null>>): SchemaDefinition<C & { [P in K]?: null[] }>;
+  array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: NonNullable<Required<ArrayType<null>>>): SchemaDefinition<C & { [P in K]: null[] }>;
+  array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: NonNullable<Optional<ArrayType<null>>>): SchemaDefinition<C & { [P in K]?: null[] }>;
+  array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: Nullable<Required<ArrayType<null>>>): SchemaDefinition<C & { [P in K]: null[] | null }>;
+  array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: Nullable<Optional<ArrayType<null>>>): SchemaDefinition<C & { [P in K]?: null[] | null }>;
 
-  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Required<ArrayType<T>>): SchemaDefinition<C & { [P in K]: Array<Pure<SchemaDefinition<T>>> }>;
-  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Optional<ArrayType<T>>): SchemaDefinition<C & { [P in K]?: Array<Pure<SchemaDefinition<T>>> }>;
+  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: NonNullable<Required<ArrayType<T>>>): SchemaDefinition<C & { [P in K]: Array<Pure<SchemaDefinition<T>>> }>;
+  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: NonNullable<Optional<ArrayType<T>>>): SchemaDefinition<C & { [P in K]?: Array<Pure<SchemaDefinition<T>>> }>;
+  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Nullable<Required<ArrayType<T>>>): SchemaDefinition<C & { [P in K]: Array<Pure<SchemaDefinition<T>>> | null }>;
+  array <K extends string, T extends {}> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Nullable<Optional<ArrayType<T>>>): SchemaDefinition<C & { [P in K]?: Array<Pure<SchemaDefinition<T>>> | null }>;
 
-  object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: Required<ObjectType<T>>): SchemaDefinition<C & { [P in K]: Pure<SchemaDefinition<T>> }>;
-  object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: Optional<ObjectType<T>>): SchemaDefinition<C & { [P in K]?: Pure<SchemaDefinition<T>> }>;
+  object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: NonNullable<Required<ObjectType<T>>>): SchemaDefinition<C & { [P in K]: Pure<SchemaDefinition<T>> }>;
+  object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: NonNullable<Optional<ObjectType<T>>>): SchemaDefinition<C & { [P in K]?: Pure<SchemaDefinition<T>> }>;
+  object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: Nullable<Required<ObjectType<T>>>): SchemaDefinition<C & { [P in K]: Pure<SchemaDefinition<T>> | null }>;
+  object <K extends string, T extends {}> (name: K, options: SchemaDefinition<T>, objectOptions?: Nullable<Optional<ObjectType<T>>>): SchemaDefinition<C & { [P in K]?: Pure<SchemaDefinition<T>> | null }>;
 
   omit <K extends keyof C> (name: K): SchemaDefinition<Omit<C, K>>;
   pick <K extends keyof C> (name: K): SchemaDefinition<Pick<C, K>>;
