@@ -105,6 +105,7 @@ dist
 
 # package lock
 package-lock.json
+yarn.lock
 
 # lib
 /lib/
