@@ -3,6 +3,8 @@ import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import * as JSONSchema from 'jsonschema'
 export { ValidationError } from 'jsonschema'
 
+type AnyObject = Record<string, unknown>
+
 interface GenericOptions {
   optional?: boolean;
   nullable?: boolean;
@@ -181,7 +183,7 @@ function createContext <C> (properties: JSONSchema7['properties'] = {}, required
   }
 }
 
-export function defineSchema (): SchemaDefinition<{}> {
+export function defineSchema (): SchemaDefinition<AnyObject> {
   return createContext()
 }
 
