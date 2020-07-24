@@ -8,11 +8,11 @@ interface GenericOptions {
   nullable?: boolean;
 }
 
-export type DirtyProps<T> = { [P in keyof T]?: unknown }
-export type Pure<T> = T extends SchemaDefinition<infer T> ? T : never
-export type Dirty<T extends SchemaDefinition<any>> = DirtyProps<Pure<T>>
-
 type Flatten<T> = { [K in keyof T]: T[K] }
+
+export type DirtyProps<T> = { [P in keyof T]?: unknown }
+export type Pure<T> = T extends SchemaDefinition<infer T> ? Flatten<T> : never
+export type Dirty<T extends SchemaDefinition<any>> = DirtyProps<Pure<T>>
 
 function createContext <C> (properties: JSONSchema7['properties'] = {}, required: string[] = []): SchemaDefinition<C> {
   const schema: JSONSchema7 = {
