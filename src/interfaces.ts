@@ -1,5 +1,5 @@
+import { JSONSchema7 } from 'json-schema'
 import { Pure } from './index'
-import { JSONSchema7 as JSONSchema } from 'json-schema'
 
 type Format = 'date-time' | 'date' | 'time' |
   'email' | 'idn-email' |
@@ -94,7 +94,14 @@ type Optional<T> = T & { optional: true }
 type NonNullable<T> = T & { nullable?: false }
 type Nullable<T> = T & { nullable: true }
 
-export interface SchemaDefinition <C = unknown> {
+export interface SchemaIdentity <C = unknown> {
+  identical (): SchemaIdentity<C>;
+  toJSONSchema (): JSONSchema7;
+}
+
+export type SchemaDefinition <C = unknown> = SchemaIdentity<C> & SchemaBuilder<C>
+
+export interface SchemaBuilder <C = unknown> {
   string <K extends string> (name: K, options?: NonNullable<Required<StringType>>): SchemaDefinition<C & { [P in K]: string }>;
   string <K extends string> (name: K, options?: NonNullable<Optional<StringType>>): SchemaDefinition<C & { [P in K]?: string }>;
   string <K extends string> (name: K, options?: Nullable<Required<StringType>>): SchemaDefinition<C & { [P in K]: string | null }>;
@@ -148,25 +155,24 @@ export interface SchemaDefinition <C = unknown> {
   array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: Nullable<Required<ArrayType<null>>>): SchemaDefinition<C & { [P in K]: null[] | null }>;
   array <K extends string> (name: K, type: 'null', options?: NullType, arrayOptions?: Nullable<Optional<ArrayType<null>>>): SchemaDefinition<C & { [P in K]?: null[] | null }>;
 
-  array <K extends string, T extends unknown> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: NonNullable<Required<ArrayType<T>>>): SchemaDefinition<C & { [P in K]: Array<Pure<SchemaDefinition<T>>> }>;
-  array <K extends string, T extends unknown> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: NonNullable<Optional<ArrayType<T>>>): SchemaDefinition<C & { [P in K]?: Array<Pure<SchemaDefinition<T>>> }>;
-  array <K extends string, T extends unknown> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Nullable<Required<ArrayType<T>>>): SchemaDefinition<C & { [P in K]: Array<Pure<SchemaDefinition<T>>> | null }>;
-  array <K extends string, T extends unknown> (name: K, type: 'object', itemOptions: SchemaDefinition<T>, arrayOptions?: Nullable<Optional<ArrayType<T>>>): SchemaDefinition<C & { [P in K]?: Array<Pure<SchemaDefinition<T>>> | null }>;
+  array <K extends string, T extends unknown> (name: K, type: 'object', itemDefinition: SchemaIdentity<T>, arrayOptions?: NonNullable<Required<ArrayType<T>>>): SchemaDefinition<C & { [P in K]: Array<Pure<SchemaIdentity<T>>> }>;
+  array <K extends string, T extends unknown> (name: K, type: 'object', itemDefinition: SchemaIdentity<T>, arrayOptions?: NonNullable<Optional<ArrayType<T>>>): SchemaDefinition<C & { [P in K]?: Array<Pure<SchemaIdentity<T>>> }>;
+  array <K extends string, T extends unknown> (name: K, type: 'object', itemDefinition: SchemaIdentity<T>, arrayOptions?: Nullable<Required<ArrayType<T>>>): SchemaDefinition<C & { [P in K]: Array<Pure<SchemaIdentity<T>>> | null }>;
+  array <K extends string, T extends unknown> (name: K, type: 'object', itemDefinition: SchemaIdentity<T>, arrayOptions?: Nullable<Optional<ArrayType<T>>>): SchemaDefinition<C & { [P in K]?: Array<Pure<SchemaIdentity<T>>> | null }>;
 
-  object <K extends string, T extends unknown> (name: K, options: SchemaDefinition<T>, objectOptions?: NonNullable<Required<ObjectType<T>>>): SchemaDefinition<C & { [P in K]: Pure<SchemaDefinition<T>> }>;
-  object <K extends string, T extends unknown> (name: K, options: SchemaDefinition<T>, objectOptions?: NonNullable<Optional<ObjectType<T>>>): SchemaDefinition<C & { [P in K]?: Pure<SchemaDefinition<T>> }>;
-  object <K extends string, T extends unknown> (name: K, options: SchemaDefinition<T>, objectOptions?: Nullable<Required<ObjectType<T>>>): SchemaDefinition<C & { [P in K]: Pure<SchemaDefinition<T>> | null }>;
-  object <K extends string, T extends unknown> (name: K, options: SchemaDefinition<T>, objectOptions?: Nullable<Optional<ObjectType<T>>>): SchemaDefinition<C & { [P in K]?: Pure<SchemaDefinition<T>> | null }>;
+  object <K extends string, T extends unknown> (name: K, definition: SchemaIdentity<T>, objectOptions?: NonNullable<Required<ObjectType<T>>>): SchemaDefinition<C & { [P in K]: Pure<SchemaIdentity<T>> }>;
+  object <K extends string, T extends unknown> (name: K, definition: SchemaIdentity<T>, objectOptions?: NonNullable<Optional<ObjectType<T>>>): SchemaDefinition<C & { [P in K]?: Pure<SchemaIdentity<T>> }>;
+  object <K extends string, T extends unknown> (name: K, definition: SchemaIdentity<T>, objectOptions?: Nullable<Required<ObjectType<T>>>): SchemaDefinition<C & { [P in K]: Pure<SchemaIdentity<T>> | null }>;
+  object <K extends string, T extends unknown> (name: K, definition: SchemaIdentity<T>, objectOptions?: Nullable<Optional<ObjectType<T>>>): SchemaDefinition<C & { [P in K]?: Pure<SchemaIdentity<T>> | null }>;
 
   omit <K extends keyof C> (...names: K[]): SchemaDefinition<Omit<C, K>>;
   pick <K extends keyof C> (...names: K[]): SchemaDefinition<Pick<C, K>>;
 
   extend <T extends unknown> (context: SchemaDefinition<T>): SchemaDefinition<C & T>;
 
-  toJSONSchema (): JSONSchema;
+  toJSONSchema (): JSONSchema7;
 }
 
-/**
- * @deprecated use SchemaDefinition instead
- */
-export type ValidationContext<C = unknown> = SchemaDefinition<C>
+export interface Combine {
+  oneOf <T extends readonly SchemaDefinition<unknown>[]> (definitions: T): SchemaIdentity<Pure<T[number]>>
+}

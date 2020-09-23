@@ -1,4 +1,4 @@
-import { validate, assertValid, defineSchema, Pure, ValidationError } from '../src/index'
+import { validate, assertValid, defineSchema, Pure, ValidationError, combineSchema } from '../src/index'
 
 it('validate', () => {
   const schema = defineSchema().string('name')
@@ -695,5 +695,74 @@ describe('defineSchema', () => {
       },
       required: ['name', 'phoneNumber']
     })
+  })
+
+  it('oneOf', () => {
+    const schema = combineSchema.oneOf([
+      defineSchema().const('type', 'email').string('email', {
+        format: 'email'
+      }),
+      defineSchema().const('type', 'webhook').string('endpoint', {
+        format: 'uri'
+      })
+    ] as const)
+
+    const values: Pure<typeof schema>[] = [{
+      type: 'email',
+      email: 'test@example.com'
+    }, {
+      type: 'webhook',
+      endpoint: 'https://example.com/test'
+    }]
+
+    // only type tesing
+    expect(values).toStrictEqual(values)
+
+    expect(schema.toJSONSchema()).toStrictEqual({
+      oneOf: [
+        {
+          type: 'object',
+          properties: {
+            type: {
+              const: 'email'
+            },
+            email: {
+              type: 'string',
+              format: 'email'
+            }
+          },
+          required: [
+            'type',
+            'email'
+          ]
+        },
+        {
+          type: 'object',
+          properties: {
+            type: {
+              const: 'webhook'
+            },
+            endpoint: {
+              type: 'string',
+              format: 'uri'
+            }
+          },
+          required: [
+            'type',
+            'endpoint'
+          ]
+        }
+      ]
+    })
+
+    expect(() => assertValid({}, schema)).toThrow(/is not exactly one/)
+    expect(() => assertValid({
+      type: 'email',
+      email: 'invalid-format-email'
+    }, schema)).toThrow(/is not exactly one/)
+    expect(() => assertValid({
+      type: 'email',
+      email: 'valid-format-email@example.com'
+    }, schema)).not.toThrow()
   })
 })

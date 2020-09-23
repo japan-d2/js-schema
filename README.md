@@ -90,6 +90,19 @@ const exampleUserSchemaOnlyPublicInfo = exampleUserSchema
   )
 ```
 
+## Combine
+
+`combineSchema.oneOf ([schema1, schema2, ...]) -> schema`
+
+```typescript
+import { defineSchema, combineSchema } from '@japan-d2/schema'
+
+const contactSchema = combineschema.oneOf([
+  phoneNumberContactSchema,
+  emailContactSchema,
+])
+```
+
 ## Runtime conversion to JSON Schema
 
 call instance method `toJSONSchema()` of schema.
