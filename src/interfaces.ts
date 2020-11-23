@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define */
+
 import { JSONSchema7 } from 'json-schema'
 import { Pure } from './index'
 

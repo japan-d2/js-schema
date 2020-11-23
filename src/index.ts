@@ -8,10 +8,8 @@ interface GenericOptions {
   nullable?: boolean;
 }
 
-type Flatten<T> = { [K in keyof T]: T[K] }
-
 export type DirtyProps<T> = { [P in keyof T]?: unknown }
-export type Pure<T> = T extends SchemaIdentity<infer T> ? Flatten<T> : never
+export type Pure<T> = T extends SchemaIdentity<infer X> ? X : never
 export type Dirty<T extends SchemaIdentity<any>> = DirtyProps<Pure<T>>
 
 function createContext <C> (properties: JSONSchema7['properties'] = {}, required: string[] = []): SchemaDefinition<C> {
@@ -202,7 +200,7 @@ export const combineSchema: Combine = {
   oneOf: _oneOf as any
 }
 
-export function validate <T> (input: DirtyProps<T>, schema: SchemaIdentity<T>, options?: JSONSchema.Options): input is Flatten<T> {
+export function validate <T> (input: DirtyProps<T>, schema: SchemaIdentity<T>, options?: JSONSchema.Options): input is T {
   const result = JSONSchema.validate(input, schema.toJSONSchema(), {
     ...options,
     throwError: false
@@ -210,7 +208,7 @@ export function validate <T> (input: DirtyProps<T>, schema: SchemaIdentity<T>, o
   return result.valid
 }
 
-export function assertValid <T> (input: DirtyProps<T>, schema: SchemaIdentity<T>, options?: JSONSchema.Options): asserts input is Flatten<T> {
+export function assertValid <T> (input: DirtyProps<T>, schema: SchemaIdentity<T>, options?: JSONSchema.Options): asserts input is T {
   JSONSchema.validate(input, schema.toJSONSchema(), {
     ...options,
     throwError: true
