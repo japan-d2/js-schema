@@ -178,3 +178,33 @@ export interface SchemaBuilder <C = unknown> {
 export interface Combine {
   oneOf <T extends readonly SchemaDefinition<unknown>[]> (definitions: T): SchemaIdentity<Pure<T[number]>>
 }
+
+export interface Field<T> {
+  type: string;
+  options?: Record<string, unknown>;
+  __type?: T & never;
+  nullable (): Field<T | null>;
+  nonnullable (): Field<NonNullable<T>>;
+}
+
+export type FieldBuilder = {
+  string (options?: StringType): Field<string>;
+  number (options?: NumberType): Field<number>;
+  integer (options?: NumberType): Field<number>;
+  boolean (options?: BooleanType): Field<boolean>;
+  null (options?: NullType): Field<null>;
+  const <T extends string | number | boolean> (value: T, options?: Metadata): Field<T>;
+  enum <T extends keyof EnumerableTypeMap, X extends readonly EnumerableTypeMap[T][]> (type: T, values: X, options?: EnumType<T>): Field<X[number]>;
+  array (type: 'string', options?: StringType, arrayOptions?: ArrayType<string>): Field<string[]>;
+  array (type: 'number' | 'integer', options?: NumberType, arrayOptions?: ArrayType<number>): Field<number[]>;
+  array (type: 'boolean', options?: BooleanType, arrayOptions?: ArrayType<boolean>): Field<boolean[]>;
+  array (type: 'null', options?: NullType, arrayOptions?: ArrayType<null>): Field<null[]>;
+  array <T, U> (type: 'object', itemDefinition: T, itemDefinitionOptional?: U, arrayOptions?: ArrayType<T>): Field<Array<ObjectSchema<T, U>>>;
+  object <T, U> (definition: T, definitionOptional?: U, objectOptions?: ObjectType<T>): Field<ObjectSchema<T, U>>;
+}
+
+export type ObjectSchema<T, U> = {
+  [P in keyof T]: T[P] extends Field<infer K> ? K : never
+} & {
+  [P in keyof U]?: U[P] extends Field<infer K> ? K : never
+};

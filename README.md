@@ -60,6 +60,26 @@ const exampleUserSchemaWithAdmin = exampleUserSchema
   .extend(withAdmin)
 ```
 
+## Direct object definition
+
+`defineObjectSchema() -> schema`
+
+```typescript
+import { defineObjectSchema, field } from '@japan-d2/schema'
+
+const user = defineObjectSchema({
+  // required fields
+  name: field.string(),
+  type: field.enum('string', ['creator', 'observer']),
+}, {
+  // optional fields
+  channels: field.array('object', {
+    name: field.string(),
+    category: field.enum('string', ['music', 'nature', 'game'])
+  })
+})
+```
+
 ## Omit specific key
 
 `schema.omit (...keys) -> schema`

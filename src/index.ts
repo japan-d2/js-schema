@@ -1,4 +1,5 @@
-import { Combine, SchemaDefinition, SchemaIdentity } from './interfaces'
+/* eslint-disable no-redeclare */
+import { Combine, Field, FieldBuilder, SchemaDefinition, SchemaIdentity, ObjectSchema } from './interfaces'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import * as JSONSchema from 'jsonschema'
 export { ValidationError } from 'jsonschema'
@@ -213,4 +214,82 @@ export function assertValid <T> (input: DirtyProps<T>, schema: SchemaIdentity<T>
     ...options,
     throwError: true
   })
+}
+
+export const field: FieldBuilder = new Proxy({} as FieldBuilder, {
+  get (_, key) {
+    return (...args: any[]) => {
+      const type = (key === 'array') ? `${args[0]}[]` : key.toString()
+      return {
+        type,
+        args,
+        nullable: () => {
+          return (field as any)[type.replace(/@*$/, '@')](...args)
+        },
+        nonnullable: () => {
+          return (field as any)[type.replace(/@+$/, '')](...args)
+        }
+      }
+    }
+  }
+})
+
+export function defineObjectSchema <
+  T extends Record<string, Field<any>>,
+  U extends Record<string, Field<any>>
+> (fields: T, optionalFields?: U): SchemaDefinition<ObjectSchema<T, U>> {
+  const mergedFields: Record<string, Field<unknown>> = {}
+
+  for (const [key, field] of Object.entries(fields)) {
+    mergedFields[key] = field
+  }
+
+  for (const [key, field] of Object.entries(optionalFields ?? {})) {
+    mergedFields[key] = {
+      ...field,
+      options: {
+        ...(field.options ?? {}),
+        optional: true
+      }
+    }
+  }
+
+  return Object.keys(mergedFields).reduce((b, key) => {
+    const { type, args, options } = (mergedFields as any)[key] as { type: string; args: any[]; options?: any }
+    const nullable = type.endsWith('@')
+    const optional = Boolean(options?.optional)
+    const rawType = type.replace(/@+$/, '')
+    const method = rawType.endsWith('[]') ? 'array' : rawType
+    const fn = (b as any)[method] as (...args: any[]) => any
+    const overrideOption = (args: any[], index: number, nullable: boolean, optional: boolean) => {
+      args[index] = {
+        ...(args[index] ?? {}),
+        nullable,
+        optional
+      }
+      return args
+    }
+
+    if (rawType === 'object') {
+      args[0] = defineObjectSchema(args[0])
+    }
+
+    if (rawType === 'object[]') {
+      args[1] = defineObjectSchema(args[1])
+    }
+
+    const maps = {
+      0: ['string', 'number', 'integer', 'boolean', 'null'],
+      1: ['const', 'object'],
+      2: ['enum', 'string[]', 'number[]', 'integer[]', 'boolean[]', 'null[]', 'object[]']
+    }
+
+    for (const [index, keys] of Object.entries(maps)) {
+      if (keys.includes(rawType)) {
+        const i = parseInt(index)
+        return fn(key, ...overrideOption(args, i, nullable, optional))
+      }
+    }
+    throw new Error(`unsupported type: ${rawType}`)
+  }, defineSchema()) as any
 }
