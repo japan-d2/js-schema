@@ -22,13 +22,13 @@ jobs:
     - run: npm install
     - run: npm run test
     - run: npm run build
-    - run: npm publish --access public
+    - run: 'npm publish --access public || :'
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     - uses: actions/setup-node@v1
       with:
         registry-url: 'https://npm.pkg.github.com'
         scope: '@japan-d2'
-    - run: npm publish
+    - run: 'npm publish || :'
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
