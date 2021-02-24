@@ -228,7 +228,21 @@ export const field: FieldBuilder = new Proxy({} as FieldBuilder, {
         },
         nonnullable: () => {
           return (field as any)[type.replace(/@+$/, '')](...args)
-        }
+        },
+        ...(key === 'object' && {
+          allowAdditionalProperties: () => {
+            return (field as any)[type](args[0], args[1], {
+              ...args[2],
+              additionalProperties: true
+            })
+          },
+          denyAdditionalProperties: () => {
+            return (field as any)[type](args[0], args[1], {
+              ...args[2],
+              additionalProperties: false
+            })
+          }
+        })
       }
     }
   }
@@ -241,7 +255,7 @@ export function defineObjectSchema <
   const mergedFields: Record<string, Field<unknown>> = {}
 
   for (const [key, field] of Object.entries(fields)) {
-    mergedFields[key] = field
+    mergedFields[key] = field as any
   }
 
   for (const [key, field] of Object.entries(optionalFields ?? {})) {
@@ -251,7 +265,7 @@ export function defineObjectSchema <
         ...(field.options ?? {}),
         optional: true
       }
-    }
+    } as any
   }
 
   return Object.keys(mergedFields).reduce((b, key) => {

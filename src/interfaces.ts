@@ -179,12 +179,19 @@ export interface Combine {
   oneOf <T extends readonly SchemaDefinition<unknown>[]> (definitions: T): SchemaIdentity<Pure<T[number]>>
 }
 
-export interface Field<T> {
+export type Field<T> = {
   type: string;
   options?: Record<string, unknown>;
   __type?: T & never;
   nullable (): Field<T | null>;
   nonnullable (): Field<NonNullable<T>>;
+}
+
+export type ObjectField<T> = Field<T> & {
+  nullable (): ObjectField<T | null>;
+  nonnullable (): ObjectField<NonNullable<T>>;
+  allowAdditionalProperties(): ObjectField<T>;
+  denyAdditionalProperties(): ObjectField<T>;
 }
 
 export type FieldBuilder = {
@@ -200,7 +207,7 @@ export type FieldBuilder = {
   array (type: 'boolean', options?: BooleanType, arrayOptions?: ArrayType<boolean>): Field<boolean[]>;
   array (type: 'null', options?: NullType, arrayOptions?: ArrayType<null>): Field<null[]>;
   array <T, U> (type: 'object', itemDefinition: T, itemDefinitionOptional?: U, arrayOptions?: ArrayType<T>): Field<Array<ObjectSchema<T, U>>>;
-  object <T, U> (definition: T, definitionOptional?: U, objectOptions?: ObjectType<T>): Field<ObjectSchema<T, U>>;
+  object <T, U> (definition: T, definitionOptional?: U, objectOptions?: ObjectType<T>): ObjectField<ObjectSchema<T, U>>;
 }
 
 export type ObjectSchema<T, U> = {
