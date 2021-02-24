@@ -213,8 +213,9 @@ export type FieldBuilder = {
   object <T, U> (definition: T, definitionOptional?: U, objectOptions?: ObjectType<T>): ObjectField<ObjectSchema<T, U>>;
 }
 
+export type ExtractField<T> = T extends ObjectField<infer K> ? K : (T extends Field<infer K> ? K : never)
 export type ObjectSchema<T, U> = {
-  [P in keyof T]: T[P] extends Field<infer K> ? K : never
+    [P in keyof T]: ExtractField<T[P]>;
 } & {
-  [P in keyof U]?: U[P] extends Field<infer K> ? K : never
+    [P in keyof U]?: ExtractField<U[P]>;
 };
