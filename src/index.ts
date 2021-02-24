@@ -261,21 +261,24 @@ export function defineObjectSchema <
     const rawType = type.replace(/@+$/, '')
     const method = rawType.endsWith('[]') ? 'array' : rawType
     const fn = (b as any)[method] as (...args: any[]) => any
-    const overrideOption = (args: any[], index: number, nullable: boolean, optional: boolean) => {
-      args[index] = {
-        ...(args[index] ?? {}),
+
+    const overrideOption = (optionArgs: any[], index: number, nullable: boolean, optional: boolean) => {
+      optionArgs[index] = {
+        ...(optionArgs[index] ?? {}),
         nullable,
         optional
       }
-      return args
+      return optionArgs
     }
 
     if (rawType === 'object') {
-      args[0] = defineObjectSchema(args[0])
+      args[0] = defineObjectSchema(args[0], args[1])
+      args[1] = args[2]
     }
 
     if (rawType === 'object[]') {
-      args[1] = defineObjectSchema(args[1])
+      args[1] = defineObjectSchema(args[1], args[2])
+      args[2] = args[3]
     }
 
     const maps = {
