@@ -161,7 +161,7 @@ function createContext <C> (properties: JSONSchema7['properties'] = {}, required
     }, [...(schema.required || []), ...required])
   }
 
-  const definition = {
+  const definition = Object.freeze({
     identical: () => definition,
     string: _string as any,
     number: _number as any,
@@ -178,7 +178,7 @@ function createContext <C> (properties: JSONSchema7['properties'] = {}, required
     toJSONSchema (): JSONSchema7 {
       return { ...schema }
     }
-  }
+  })
 
   return definition
 }
@@ -271,14 +271,16 @@ export function defineObjectSchema <
       return optionArgs
     }
 
+    const newArgs = [...args]
+
     if (rawType === 'object') {
-      args[0] = defineObjectSchema(args[0], args[1])
-      args[1] = args[2]
+      newArgs[0] = defineObjectSchema(args[0], args[1])
+      newArgs[1] = args[2]
     }
 
     if (rawType === 'object[]') {
-      args[1] = defineObjectSchema(args[1], args[2])
-      args[2] = args[3]
+      newArgs[1] = defineObjectSchema(args[1], args[2])
+      newArgs[2] = args[3]
     }
 
     const maps = {
@@ -290,7 +292,7 @@ export function defineObjectSchema <
     for (const [index, keys] of Object.entries(maps)) {
       if (keys.includes(rawType)) {
         const i = parseInt(index)
-        return fn(key, ...overrideOption(args, i, nullable, optional))
+        return fn(key, ...overrideOption(newArgs, i, nullable, optional))
       }
     }
     throw new Error(`unsupported type: ${rawType}`)

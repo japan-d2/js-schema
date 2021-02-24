@@ -1276,4 +1276,379 @@ describe('defineObjectSchema', () => {
     // only type tesing
     expect(testSchema).toStrictEqual(testSchema)
   })
+
+  describe('real-world examples', () => {
+    it('Unity Addressable Assets Catalog', () => {
+      const assetCatalogObjectTypeSchema = {
+        m_AssemblyName: field.string(),
+        m_ClassName: field.string()
+      }
+
+      const assetCatalogProviderDataSchema = {
+        m_Id: field.string(),
+        m_ObjectType: field.object(assetCatalogObjectTypeSchema, {}),
+        m_Data: field.string()
+      }
+
+      const assetCatalogSchema = {
+        m_LocatorId: field.string(),
+        m_InstanceProviderData: field.object(assetCatalogProviderDataSchema, {}),
+        m_SceneProviderData: field.object(assetCatalogProviderDataSchema, {}),
+        m_ResourceProviderData: field.array('object', assetCatalogProviderDataSchema, {}),
+        m_ProviderIds: field.array('string'),
+        m_InternalIds: field.array('string'),
+        m_KeyDataString: field.string(),
+        m_BucketDataString: field.string(),
+        m_EntryDataString: field.string(),
+        m_ExtraDataString: field.string(),
+        m_resourceTypes: field.array('object', assetCatalogObjectTypeSchema, {})
+      }
+
+      const schema = defineSchema()
+        .object('catalog', defineObjectSchema({
+        }, {
+          ios: field.object(assetCatalogSchema, {}, {
+            additionalProperties: true
+          }),
+          win64: field.object(assetCatalogSchema, {}, {
+            additionalProperties: true
+          })
+        }))
+
+      expect(schema.toJSONSchema()).toStrictEqual({
+        type: 'object',
+        properties: {
+          catalog: {
+            type: 'object',
+            properties: {
+              ios: {
+                type: 'object',
+                properties: {
+                  m_LocatorId: {
+                    type: 'string'
+                  },
+                  m_InstanceProviderData: {
+                    type: 'object',
+                    properties: {
+                      m_Id: {
+                        type: 'string'
+                      },
+                      m_ObjectType: {
+                        type: 'object',
+                        properties: {
+                          m_AssemblyName: {
+                            type: 'string'
+                          },
+                          m_ClassName: {
+                            type: 'string'
+                          }
+                        },
+                        required: [
+                          'm_AssemblyName',
+                          'm_ClassName'
+                        ]
+                      },
+                      m_Data: {
+                        type: 'string'
+                      }
+                    },
+                    required: [
+                      'm_Id',
+                      'm_ObjectType',
+                      'm_Data'
+                    ]
+                  },
+                  m_SceneProviderData: {
+                    type: 'object',
+                    properties: {
+                      m_Id: {
+                        type: 'string'
+                      },
+                      m_ObjectType: {
+                        type: 'object',
+                        properties: {
+                          m_AssemblyName: {
+                            type: 'string'
+                          },
+                          m_ClassName: {
+                            type: 'string'
+                          }
+                        },
+                        required: [
+                          'm_AssemblyName',
+                          'm_ClassName'
+                        ]
+                      },
+                      m_Data: {
+                        type: 'string'
+                      }
+                    },
+                    required: [
+                      'm_Id',
+                      'm_ObjectType',
+                      'm_Data'
+                    ]
+                  },
+                  m_ResourceProviderData: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        m_Id: {
+                          type: 'string'
+                        },
+                        m_ObjectType: {
+                          type: 'object',
+                          properties: {
+                            m_AssemblyName: {
+                              type: 'string'
+                            },
+                            m_ClassName: {
+                              type: 'string'
+                            }
+                          },
+                          required: [
+                            'm_AssemblyName',
+                            'm_ClassName'
+                          ]
+                        },
+                        m_Data: {
+                          type: 'string'
+                        }
+                      },
+                      required: [
+                        'm_Id',
+                        'm_ObjectType',
+                        'm_Data'
+                      ]
+                    }
+                  },
+                  m_ProviderIds: {
+                    type: 'array',
+                    items: {
+                      type: 'string'
+                    }
+                  },
+                  m_InternalIds: {
+                    type: 'array',
+                    items: {
+                      type: 'string'
+                    }
+                  },
+                  m_KeyDataString: {
+                    type: 'string'
+                  },
+                  m_BucketDataString: {
+                    type: 'string'
+                  },
+                  m_EntryDataString: {
+                    type: 'string'
+                  },
+                  m_ExtraDataString: {
+                    type: 'string'
+                  },
+                  m_resourceTypes: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        m_AssemblyName: {
+                          type: 'string'
+                        },
+                        m_ClassName: {
+                          type: 'string'
+                        }
+                      },
+                      required: [
+                        'm_AssemblyName',
+                        'm_ClassName'
+                      ]
+                    }
+                  }
+                },
+                required: [
+                  'm_LocatorId',
+                  'm_InstanceProviderData',
+                  'm_SceneProviderData',
+                  'm_ResourceProviderData',
+                  'm_ProviderIds',
+                  'm_InternalIds',
+                  'm_KeyDataString',
+                  'm_BucketDataString',
+                  'm_EntryDataString',
+                  'm_ExtraDataString',
+                  'm_resourceTypes'
+                ],
+                additionalProperties: true
+              },
+              win64: {
+                type: 'object',
+                properties: {
+                  m_LocatorId: {
+                    type: 'string'
+                  },
+                  m_InstanceProviderData: {
+                    type: 'object',
+                    properties: {
+                      m_Id: {
+                        type: 'string'
+                      },
+                      m_ObjectType: {
+                        type: 'object',
+                        properties: {
+                          m_AssemblyName: {
+                            type: 'string'
+                          },
+                          m_ClassName: {
+                            type: 'string'
+                          }
+                        },
+                        required: [
+                          'm_AssemblyName',
+                          'm_ClassName'
+                        ]
+                      },
+                      m_Data: {
+                        type: 'string'
+                      }
+                    },
+                    required: [
+                      'm_Id',
+                      'm_ObjectType',
+                      'm_Data'
+                    ]
+                  },
+                  m_SceneProviderData: {
+                    type: 'object',
+                    properties: {
+                      m_Id: {
+                        type: 'string'
+                      },
+                      m_ObjectType: {
+                        type: 'object',
+                        properties: {
+                          m_AssemblyName: {
+                            type: 'string'
+                          },
+                          m_ClassName: {
+                            type: 'string'
+                          }
+                        },
+                        required: [
+                          'm_AssemblyName',
+                          'm_ClassName'
+                        ]
+                      },
+                      m_Data: {
+                        type: 'string'
+                      }
+                    },
+                    required: [
+                      'm_Id',
+                      'm_ObjectType',
+                      'm_Data'
+                    ]
+                  },
+                  m_ResourceProviderData: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        m_Id: {
+                          type: 'string'
+                        },
+                        m_ObjectType: {
+                          type: 'object',
+                          properties: {
+                            m_AssemblyName: {
+                              type: 'string'
+                            },
+                            m_ClassName: {
+                              type: 'string'
+                            }
+                          },
+                          required: [
+                            'm_AssemblyName',
+                            'm_ClassName'
+                          ]
+                        },
+                        m_Data: {
+                          type: 'string'
+                        }
+                      },
+                      required: [
+                        'm_Id',
+                        'm_ObjectType',
+                        'm_Data'
+                      ]
+                    }
+                  },
+                  m_ProviderIds: {
+                    type: 'array',
+                    items: {
+                      type: 'string'
+                    }
+                  },
+                  m_InternalIds: {
+                    type: 'array',
+                    items: {
+                      type: 'string'
+                    }
+                  },
+                  m_KeyDataString: {
+                    type: 'string'
+                  },
+                  m_BucketDataString: {
+                    type: 'string'
+                  },
+                  m_EntryDataString: {
+                    type: 'string'
+                  },
+                  m_ExtraDataString: {
+                    type: 'string'
+                  },
+                  m_resourceTypes: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        m_AssemblyName: {
+                          type: 'string'
+                        },
+                        m_ClassName: {
+                          type: 'string'
+                        }
+                      },
+                      required: [
+                        'm_AssemblyName',
+                        'm_ClassName'
+                      ]
+                    }
+                  }
+                },
+                required: [
+                  'm_LocatorId',
+                  'm_InstanceProviderData',
+                  'm_SceneProviderData',
+                  'm_ResourceProviderData',
+                  'm_ProviderIds',
+                  'm_InternalIds',
+                  'm_KeyDataString',
+                  'm_BucketDataString',
+                  'm_EntryDataString',
+                  'm_ExtraDataString',
+                  'm_resourceTypes'
+                ],
+                additionalProperties: true
+              }
+            },
+            required: []
+          }
+        },
+        required: [
+          'catalog'
+        ]
+      })
+    })
+  })
 })
