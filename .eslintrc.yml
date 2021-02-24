@@ -20,6 +20,10 @@ extends:
   - plugin:node/recommended
   - standard
 rules:
+  no-unused-vars:
+    - off
+  "@typescript-eslint/no-unused-vars":
+    - error
   node/no-unsupported-features/es-syntax:
     - error
     - ignores:
