@@ -288,8 +288,13 @@ export function defineObjectSchema <
     const newArgs = [...args]
 
     if (rawType === 'object') {
-      newArgs[0] = defineObjectSchema(args[0], args[1])
-      newArgs[1] = args[2]
+      if ('toJSONSchema' in args[0]) {
+        newArgs[0] = args[0]
+        newArgs[1] = args[1]
+      } else {
+        newArgs[0] = defineObjectSchema(args[0], args[1])
+        newArgs[1] = args[2]
+      }
     }
 
     if (rawType === 'object[]') {

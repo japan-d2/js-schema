@@ -58,7 +58,10 @@ describe('defineSchema', () => {
       }),
       objectRequiredNullable: field.object({
         a: field.string()
-      }).nullable()
+      }).nullable(),
+      objectRequiredFromSchema: field.object(defineObjectSchema({
+        a: field.string()
+      }, {}))
     }, {
       stringOptional: field.string(),
       stringOptionalNullable: field.string().nullable(),
@@ -96,7 +99,10 @@ describe('defineSchema', () => {
       }),
       objectOptionalNullable: field.object({
         a: field.string()
-      }).nullable()
+      }).nullable(),
+      objectOptionalFromSchema: field.object(defineObjectSchema({
+        a: field.string()
+      }, {}))
     })
 
     expect(schema.toJSONSchema()).toStrictEqual({
@@ -459,7 +465,21 @@ describe('defineSchema', () => {
           },
           required: ['a']
         },
+        objectRequiredFromSchema: {
+          type: 'object',
+          properties: {
+            a: { type: 'string' }
+          },
+          required: ['a']
+        },
         objectOptionalNullable: {
+          type: 'object',
+          properties: {
+            a: { type: 'string' }
+          },
+          required: ['a']
+        },
+        objectOptionalFromSchema: {
           type: 'object',
           properties: {
             a: { type: 'string' }
@@ -496,7 +516,8 @@ describe('defineSchema', () => {
         'arrayObjectRequired',
         'arrayObjectRequiredNullable',
         'objectRequired',
-        'objectRequiredNullable'
+        'objectRequiredNullable',
+        'objectRequiredFromSchema'
       ]
     })
 
@@ -530,7 +551,8 @@ describe('defineSchema', () => {
       arrayObjectRequired: [{ a: 'a' }],
       arrayObjectRequiredNullable: null,
       objectRequired: { a: 'a' },
-      objectRequiredNullable: null
+      objectRequiredNullable: null,
+      objectRequiredFromSchema: { a: 'a ' }
     }
 
     // only type tesing
